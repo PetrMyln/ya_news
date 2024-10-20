@@ -31,7 +31,10 @@ class TestRoutes(TestCase):
             # Путь для страницы новости
             # принимает в качестве позиционного аргумента
             # id записи; передаём его в кортеже.
-            ('news:detail', (self.news.pk,))
+            ('news:detail', (self.news.pk,)),
+            ('users:login', None),
+            ('users:logout', None),
+            ('users:signup', None),
         )
         # Итерируемся по внешнему кортежу
         # и распаковываем содержимое вложенных кортежей:
