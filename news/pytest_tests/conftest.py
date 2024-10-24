@@ -25,10 +25,12 @@ def author_client(author):
     client.force_login(author)
     return client
 
+
 @pytest.fixture
 def just_client(author):
     client = Client()
     return client
+
 
 @pytest.fixture
 def not_author_client(not_author):
@@ -45,6 +47,7 @@ def news():
     )
     return news
 
+
 @pytest.fixture
 def many_news():
     today = datetime.today()
@@ -57,6 +60,7 @@ def many_news():
         for index in range(settings.NEWS_COUNT_ON_HOME_PAGE + 1)
     ]
     News.objects.bulk_create(all_news)
+
 
 @pytest.fixture
 def comment(author, news):
@@ -77,8 +81,9 @@ def pk_for_args_news(news):
 def pk_for_args_comment(comment):
     return (comment.pk,)
 
+
 @pytest.fixture
-def create_comment_for_news(news, author):
+def create_comments_for_news(news, author):
     now = timezone.now()
     for index in range(settings.NEWS_COUNT_ON_HOME_PAGE):
         # Создаём объект и записываем его в переменную.
@@ -90,6 +95,19 @@ def create_comment_for_news(news, author):
         # И сохраняем эти изменения.
         comment.save()
 
+
 @pytest.fixture
 def create_detail_url(news):
     return reverse('news:detail', args=(news.pk,))
+
+
+@pytest.fixture
+def form_data():
+    return {
+        'text': 'Коммент',
+    }
+
+
+@pytest.fixture()
+def url_reverse(news, form_data):
+    return reverse('news:detail', args=(news.id,), ), form_data

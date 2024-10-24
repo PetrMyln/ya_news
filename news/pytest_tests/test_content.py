@@ -1,27 +1,16 @@
-# test_content.py
 import pytest
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.urls import reverse
-from datetime import datetime, timedelta
-
-from news.forms import CommentForm
-from news.models import News, Comment
-from django.utils import timezone
+from pytest_lazyfixture import lazy_fixture
 
 HOME_URL = reverse('news:home')
 
 
 @pytest.mark.django_db
 def test_news_count(client, many_news):
-    # Загружаем главную страницу.
     response = client.get(HOME_URL)
-    # Код ответа не проверяем, его уже проверили в тестах маршрутов.
-    # Получаем список объектов из словаря контекста.
     object_list = response.context['object_list']
-    # Определяем количество записей в списке.
     news_count = object_list.count()
-    # Проверяем, что на странице именно 10 новостей.
     assert news_count == settings.NEWS_COUNT_ON_HOME_PAGE
 
 
@@ -37,7 +26,7 @@ def test_news_order(client, many_news):
 @pytest.mark.django_db
 def test_comments_order(
         client,
-        create_comment_for_news,
+        create_comments_for_news,
         news,
         create_detail_url):
     url = create_detail_url
@@ -54,11 +43,11 @@ def test_comments_order(
 @pytest.mark.parametrize(
     'parametrized_client, form_status',
     (
-            (pytest.lazy_fixture('just_client'), False),
-            (pytest.lazy_fixture('author_client'), True),
+            (lazy_fixture('just_client'), False),
+            (lazy_fixture('author_client'), True),
     ),
 )
-def test_form_exist_for_diferent_users(
+def test_form_exist_for_different_users(
         create_detail_url,
         parametrized_client,
         form_status):
